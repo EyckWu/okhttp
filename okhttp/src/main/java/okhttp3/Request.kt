@@ -165,6 +165,7 @@ class Request internal constructor(
 
     /**
      * Sets the URL target of this request.
+     * 设置请求的目标url
      *
      * @throws IllegalArgumentException if [url] is not a valid HTTP or HTTPS URL. Avoid this
      *     exception by calling [HttpUrl.parse]; it returns null for invalid URLs.
