@@ -24,43 +24,43 @@ import java.util.concurrent.TimeUnit
  * or response.
  */
 interface Interceptor {
-  @Throws(IOException::class)
-  fun intercept(chain: Chain): Response
-
-  companion object {
-    // This lambda conversion is for Kotlin callers expecting a Java SAM (single-abstract-method).
-    @JvmName("-deprecated_Interceptor")
-    inline operator fun invoke(
-      crossinline block: (chain: Chain) -> Response
-    ): Interceptor = object : Interceptor {
-      override fun intercept(chain: Chain) = block(chain)
-    }
-  }
-
-  interface Chain {
-    fun request(): Request
-
     @Throws(IOException::class)
-    fun proceed(request: Request): Response
+    fun intercept(chain: Chain): Response
 
-    /**
-     * Returns the connection the request will be executed on. This is only available in the chains
-     * of network interceptors; for application interceptors this is always null.
-     */
-    fun connection(): Connection?
+    companion object {
+        // This lambda conversion is for Kotlin callers expecting a Java SAM (single-abstract-method).
+        @JvmName("-deprecated_Interceptor")
+        inline operator fun invoke(
+                crossinline block: (chain: Chain) -> Response
+        ): Interceptor = object : Interceptor {
+            override fun intercept(chain: Chain) = block(chain)
+        }
+    }
 
-    fun call(): Call
+    interface Chain {
+        fun request(): Request
 
-    fun connectTimeoutMillis(): Int
+        @Throws(IOException::class)
+        fun proceed(request: Request): Response
 
-    fun withConnectTimeout(timeout: Int, unit: TimeUnit): Chain
+        /**
+         * Returns the connection the request will be executed on. This is only available in the chains
+         * of network interceptors; for application interceptors this is always null.
+         */
+        fun connection(): Connection?
 
-    fun readTimeoutMillis(): Int
+        fun call(): Call
 
-    fun withReadTimeout(timeout: Int, unit: TimeUnit): Chain
+        fun connectTimeoutMillis(): Int
 
-    fun writeTimeoutMillis(): Int
+        fun withConnectTimeout(timeout: Int, unit: TimeUnit): Chain
 
-    fun withWriteTimeout(timeout: Int, unit: TimeUnit): Chain
-  }
+        fun readTimeoutMillis(): Int
+
+        fun withReadTimeout(timeout: Int, unit: TimeUnit): Chain
+
+        fun writeTimeoutMillis(): Int
+
+        fun withWriteTimeout(timeout: Int, unit: TimeUnit): Chain
+    }
 }
